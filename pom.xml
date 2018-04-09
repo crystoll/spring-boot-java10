@@ -5,7 +5,7 @@
 
 	<groupId>fi.solita</groupId>
 	<artifactId>java10demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>java10demo</name>
@@ -21,6 +21,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<!-- Setup JDK 10 -->
 		<maven.compiler.source>10</maven.compiler.source>
 		<maven.compiler.target>10</maven.compiler.target>
 	</properties>
@@ -36,6 +37,15 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Java EE dependencies that are moving away from the core -->
+		<!--<dependency>-->
+			<!--<groupId>javax.annotation</groupId>-->
+			<!--<artifactId>javax.annotation-api</artifactId>-->
+			<!--<version>1.3.2</version>-->
+		<!--</dependency>-->
+
+
 	</dependencies>
 
 	<build>
@@ -43,6 +53,40 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!-- Getting error with JDK 10: -->
+			<!--
+			[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.7.0:testCompile (default-testCompile) on project java10demo: Execution default-testCompile of goal org.apache.maven.plugins:maven-compiler-plugin:3.7.0:testCompile failed.: IllegalArgumentException -> [Help 1]
+			-->
+			<!-- Fix: Upgrade ASM version to more recent like this -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<release>10</release>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.ow2.asm</groupId>
+						<artifactId>asm</artifactId>
+						<version>6.1.1</version> <!-- Use newer version of ASM -->
+					</dependency>
+				</dependencies>
+			</plugin>
+			<!-- Similar issue with Surefire plugin -->
+			<!-- [ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.21.0:test (default-test) on project java10demo: Execution default-test of goal org.apache.maven.plugins:maven-surefire-plugin:2.21.0:test failed.: IllegalArgumentException -> [Help 1] -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.21.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.ow2.asm</groupId>
+						<artifactId>asm</artifactId>
+						<version>6.1.1</version> <!-- Use newer version of ASM -->
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
