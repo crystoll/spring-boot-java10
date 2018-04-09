@@ -1,0 +1,1 @@
+java --illegal-access=deny -jar target/*.jar
