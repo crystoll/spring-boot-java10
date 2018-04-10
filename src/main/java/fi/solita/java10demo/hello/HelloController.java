@@ -10,7 +10,7 @@ import java.util.Map;
 @RestController
 public class HelloController {
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, path = {"/","","/index.html"})
     public Map getGreeting() {
         var now = Instant.now();
         return Map.of("message", String.format("It's %s", now));
